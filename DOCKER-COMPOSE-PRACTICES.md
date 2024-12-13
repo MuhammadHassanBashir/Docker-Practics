@@ -113,8 +113,8 @@ STEPS
     
       Ensure RDS Instance is Accessible:
       
-      Make sure the RDS instance is publicly accessible or resides in the same VPC as the container's host (if using EC2).
-      Update the RDS security group to allow inbound traffic on port 3306 from your container's IP or security group.
+      **Make sure the RDS instance is publicly accessible(agr apna outside the vpc local system/instance sa RDS ko access krna ha) or resides in the same VPC as the container's host (if using EC2).
+      Update the RDS security group to allow inbound traffic on port 3306/5432 from your container's IP or security group. **jb ap RDS create krty hn usi time ap apny created instance or rds ki connectivity ker sakhty hn, RDS khud hi 2 security group create kerta ha 1 for RDS or instance ki lye port open ker dye ga. (jis ma RDS SG ka inbound rule ma allow port db:3306/5432 ki port hogi or source ma instance k security group hoga. mean k instance rds ki 3306/5432 port per hit krna chahta ha tky traffic RDS ma jar sakhty so RDS apny SG ma instance ki traffic k lye port ko open kery or y kam sirf instance sa hi ho is k lye hum RDS ka SG ma inbound rule ma source instance k SG dety hn... tky RDS SG jb port open kry tu wo sirf instance k lye kery.., same port instance k outbound rule ma b add hogi. mean instance ki traffic ko instance k SG sa bahir nikalny k lye.. **
      
   2- Use .env Variables:
     
