@@ -226,6 +226,84 @@ STEPS
     5. Database Connections Metric:
         
         RDS metrics me DatabaseConnections ko monitor karein. Agar application successfully connect karta hai, to is metric ka value increase hoga.
-        
 
+## Interview question
+
+       Pros and Cros of fetch secret directly from aws secret manager
+    
+    **Directly Fetching Secrets from Secrets Manager**
+        AWS Secrets Manager ka jo sample code diya jata hai, woh AWS SDK ke sath kaam karta hai. Iska matlab hai, agar aapka container ya application AWS ke IAM credentials ke sath configured hai (e.g., EC2 instance profile, ECS task role, ya EKS pod IAM role), to aap Secrets Manager se direct secrets retrieve kar sakte hain bina .env file ke.
+    
+    **Example: Python Code for Retrieving Secrets**
+    Aap AWS Secrets Manager ka sample code kuch is tarah use karenge:     
+    
+    import boto3
+    import json
+    
+    def get_secret():
+        secret_name = "your-secret-name"
+        region_name = "your-region"
+    
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+            service_name="secretsmanager",
+            region_name=region_name
+        )
+    
+        try:
+            # Retrieve the secret
+            get_secret_value_response = client.get_secret_value(
+                SecretId=secret_name
+            )
+    
+            # Extract the secret value
+            if "SecretString" in get_secret_value_response:
+                secret = get_secret_value_response["SecretString"]
+            else:
+                secret = base64.b64decode(get_secret_value_response["SecretBinary"])
+    
+            # Convert secret to a dictionary if needed
+            return json.loads(secret)
+        except Exception as e:
+            print(f"Error retrieving secret: {e}")
+            raise
+    
+    
+    secret = get_secret()     ##Use the function to get the secret
+    print(secret)
+    
+    **Key Points**
+    IAM Role Configuration:
+    
+    Application ko AWS Secret Manager se interact karne ke liye IAM permission chahiye (secretsmanager:GetSecretValue).
+    ECS tasks, EKS pods, ya EC2 instance par proper IAM role assign karein.
+    
+    **Avoid Hardcoding Credentials:**
+    
+    AWS Secrets Manager se direct fetch karna .env file me sensitive data likhne se behtar hai, kyunki yeh dynamic aur secure hai.
+    
+    **Using Environment Variables vs. Fetching Directly**
+    
+    **1. Direct Fetch from Secrets Manager**         ---> # secret manager k code ko use krna ha or jis resource(EC2, ECS, EKS) per b application run horhi ha. usko  y permission dedo **secretsmanager:GetSecretValue** but hr request per secret manager per API call hogi jis sa application slow hojye gi..
+    Advantages:
+    
+    Secrets dynamically fetch hote hain; aapko container rebuild karne ki zarurat nahi hoti agar secret update hota hai.
+    Security zyada hai, kyunki secrets environment variables me visible nahi hote.
+    
+    Challenges:
+    
+    **Har request par Secrets Manager API call hoti hai, jo slightly slow ho sakti hai.**
+    Local development me AWS permissions ka setup zarurat hoti hai.
+    
+    **2. Using Environment Variables or .env File**
+    
+    Advantages:
+    
+    **Simple aur fast setup. Secrets memory me as environment variables store hote hain.**
+    Local development ke liye easy hai.
+    Challenges:
+    
+    **Secrets memory me hone ki wajah se exposure ka risk zyada hai.**
+    Agar secret change hota hai, to container ko restart ya rebuild karna padta hai.
 
