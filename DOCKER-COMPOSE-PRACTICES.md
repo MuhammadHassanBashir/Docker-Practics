@@ -302,8 +302,107 @@ STEPS
     
     **Simple aur fast setup. Secrets memory me as environment variables store hote hain.**
     Local development ke liye easy hai.
-    Challenges:
+
+     Challenges:
     
     **Secrets memory me hone ki wajah se exposure ka risk zyada hai.**
-    Agar secret change hota hai, to container ko restart ya rebuild karna padta hai.
+      Agar secret change hota hai, to container ko restart ya rebuild karna padta hai.
 
+
+
+## Case 1: Application in Public Subnet & Database in Private Subnet
+
+Aapki application public subnet ke andar hai aur database private subnet me host ki gayi hai. Application ko database se connect karna hai without exposing the database to the internet.
+
+
+**Steps for Connectivity**
+
+    1- Ensure VPC Networking:
+    
+    Public aur private subnets ek hi VPC ke andar hone chahiye.
+
+    2- Database Security Group:
+
+        Inbound Rule:
+        
+        Database ka Security Group (SG) application ke instance ka SG allow kare.
+        Protocol: TCP
+        Port: Database port (e.g., 3306 for MySQL, 5432 for PostgreSQL)
+        Source: Application instance ka Security Group.
+
+   3- Application Security Group:
+
+        Application instance ka SG database instance ke SG ko outbound traffic ke liye allow kare.
+
+   4- Application Configuration:
+
+        Application ko database ka private IP provide karein.
+        Example .env file:
+        env
+        Copy code
+        DB_HOST=10.0.1.20   # Database private IP
+        DB_PORT=3306
+        DB_USER=admin
+        DB_PASSWORD=yourpassword
+
+    5- Verify Connection:
+
+        Application instance se SSH karein aur test karein:
+        bash
+        Copy code
+        mysql -h 10.0.1.20 -u admin -p
+        
+## Case 2: Application in Private Subnet & Database in Private Subnet
+
+    Aapki application aur database dono private subnet ke andar hain. Application ko database access karna hai aur internet se bhi connectivity chahiye.
+
+    1- Steps for Connectivity
+    
+        Ensure VPC Networking:
+
+        Dono subnets ek hi VPC ke andar hone chahiye.
+    
+    2- Setup NAT Gateway for Internet Access:
+    
+        Private Subnet Route Table:
+        NAT Gateway ka route add karein for internet access:
+        makefile
+        Copy code
+        Destination: 0.0.0.0/0
+        Target: nat-xxxxxxxx
+    
+    3- Database Security Group:
+    
+        Inbound Rule:
+        Database ka SG application ke SG ko allow kare.
+        Protocol: TCP
+        Port: Database port (e.g., 3306)
+        Source: Application SG.
+    
+    4- Application Security Group:
+        
+        Application SG ko database SG allow kare.
+    
+    5- Application Configuration:
+        
+       Application ko database ka private IP use karna hoga.
+    
+        Example .env file:
+        env
+        Copy code
+        DB_HOST=10.0.1.20   # Database private IP
+        DB_PORT=3306
+        DB_USER=admin
+        DB_PASSWORD=yourpassword
+    
+    6- Verify Connection:
+    
+        SSH into the application instance:
+
+        ssh -i your-key.pem ec2-user@<private-subnet-instance>
+    
+    7- Test connection to the database:
+
+        mysql -h 10.0.1.20 -u admin -p
+        
+   
