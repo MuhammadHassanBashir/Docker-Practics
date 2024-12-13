@@ -475,10 +475,61 @@ Here’s your approach rewritten in a clearer and more concise way:
         
         CloudWatch ensures effective monitoring and alerting for all environments.
         This approach follows AWS best practices and maintains a secure, scalable, and efficient architecture for both testing and production environments. 😊
+
+Remember: 
+
+    without container apko aik application ko server per run krny k lye server per apko environment create kerna hoga. application ko run hony k lye kya kya packages chahye wo btatye ho.. or let say k ap na us application ko ab kisi or server per run krna ha tu waha b apko environment setup krna hoga.  or aik sa zayada server k case ma apko hr server per environment setup krna hoga phir application container ma run horhi hogi..  but with container apna apni environment setup krny k lye library/dependency or code ko package ker k image create ker lety hn phir us image ko hum public repo ma move kr sakhty hn. or phir use images sa hum kisi b ec2-instance/ECS/EKS ma container run ker sakhty hn, is sa buhat sa kam asan hojata ha...  
     
+    2nd thing container light weight hota ha. y host OS ka kernal share ker rha hota ha. is lye booting time or shutting time b kam hota ha.. 
+    3rd container portable ha, aik jaga sa dosari per move b ker skahty hn...
+
+
+## Issues of server and benefits of containers
     
+    **Without Containers:**
     
+    Environment Setup on Each Server:
     
+    For running an application, you need to manually install all necessary dependencies, libraries, and packages (e.g., Python, Node.js, Java, or specific runtime environments) on every server.
+    This setup can vary based on the server’s OS or configurations, leading to inconsistency or compatibility issues.
+    
+    **Multiple Servers:**
+    
+    If you want to run the same application on multiple servers, you must repeat the setup process for each server.
+    This approach is error-prone, time-consuming, and not scalable.
+    
+    **Manual Effort:**
+    
+    The deployment process becomes cumbersome as you need to manage and troubleshoot environments for every new server.
+    With Containers:
+    
+    **Environment Encapsulation:**
+    
+    A container image packages the application along with its dependencies, runtime, and libraries into a single unit.
+    This image ensures that the application runs the same way, regardless of where it is deployed.
+    
+    **Easy Portability:**
+    
+    The containerized application can be moved between environments (development, staging, production) or different servers with ease.
+    No need to repeat environment setup—just run the container using the image.
+    
+    **Lightweight:**
+    
+    Containers share the host OS kernel, so they consume fewer resources compared to virtual machines.
+    Booting time and shutdown time are much faster due to minimal overhead.
+    
+    **Scalability:**
+    
+    You can quickly scale your application by spinning up additional containers using tools like Docker Compose, Kubernetes, or AWS ECS.
+    
+    **Consistency:**
+    
+    Since containers include the application environment, there are no issues like "it works on my machine but not on the server."
+    
+        
+        
+        
+        
     
     
     
