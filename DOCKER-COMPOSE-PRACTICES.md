@@ -409,78 +409,78 @@ Aapki application public subnet ke andar hai aur database private subnet me host
 
 Here’s your approach rewritten in a clearer and more concise way:
 
-1. Testing Environment: Secure Instance Access
-
-    Instance Placement:
+    1. Testing Environment: Secure Instance Access
     
-    Place a lightweight instance in the public subnet (Bastion Host) to allow SSH access from the internet. Avoid assigning a public IP to the private instances for security.
-
-    Access Workflow:
-    
-    SSH into the public instance and then access private subnet instances from there.
-    
-    Use this to run docker-compose for testing your application.
-    Test application connectivity with the database in the private subnet.
-    
-    Load Balancer & Traffic Flow:
-    
-    Place the Load Balancer in the public subnet.
-    Route traffic: Route 53 → CloudFront → Load Balancer → Private Subnet Instances.
-    For frontend, serve static files via S3 integrated with CloudFront.
-    For backend, route traffic through CloudFront and the Load Balancer to private subnet instances.
-    
-    Testing DNS:
-    
-    Use a temporary Route 53 DNS record pointing to the Load Balancer address for testing.
-    If instance-level testing is required, SSH into the public Bastion Host and connect to private subnet instances.
-
-2. Staging/Production Environment: Secure ECS & Database
-
-    Instance and Service Placement:
-    
-    Place ECS (or application instances) and the database in the private subnet for enhanced security.
-    Place the Load Balancer in the public subnet to manage incoming traffic.
-    
-    Traffic Routing:
-    
-    Route traffic: Route 53 → CloudFront → Load Balancer → ECS Services (Private Subnet).
-    Use CloudFront to cache and distribute frontend files (stored in S3) for improved performance and security.
-    
-    DNS:
-    
-    Assign a custom domain via Route 53 to CloudFront for both frontend and backend traffic.
-
-    Monitoring and Metrics:
-    
-    Configure CloudWatch for application, ECS, and database performance monitoring.
-    Integrate SNS or other alerting tools for proactive notifications.
-    Key Advantages of this Approach
-    
-    Security:
-    
-    Direct internet access is restricted for private resources.
-    Bastion Host ensures controlled SSH access to private instances.
-    
-    Scalability:
-    
-    ECS in private subnet allows for auto-scaling while maintaining secure DB access.
-    CloudFront improves performance by caching frontend assets.
-    
-    Testing Flexibility:
-    
-    Public Bastion Host provides controlled access for testing purposes.
-    Testing setup closely mirrors the production environment for consistency.
-    
-    Centralized Monitoring:
-    
-    CloudWatch ensures effective monitoring and alerting for all environments.
-    This approach follows AWS best practices and maintains a secure, scalable, and efficient architecture for both testing and production environments. 😊
-
-
-
-
-
-
-
+        Instance Placement:
         
-   
+        Place a lightweight instance in the public subnet (Bastion Host) to allow SSH access from the internet. Avoid assigning a public IP to the private instances for security.
+    
+        Access Workflow:
+        
+        SSH into the public instance and then access private subnet instances from there.
+        
+        Use this to run docker-compose for testing your application.
+        Test application connectivity with the database in the private subnet.
+        
+        Load Balancer & Traffic Flow:
+        
+        Place the Load Balancer in the public subnet.
+        Route traffic: Route 53 → CloudFront → Load Balancer → Private Subnet Instances.
+        For frontend, serve static files via S3 integrated with CloudFront.
+        For backend, route traffic through CloudFront and the Load Balancer to private subnet instances.
+        
+        Testing DNS:
+        
+        Use a temporary Route 53 DNS record pointing to the Load Balancer address for testing.
+        If instance-level testing is required, SSH into the public Bastion Host and connect to private subnet instances.
+    
+    2. Staging/Production Environment: Secure ECS & Database
+    
+        Instance and Service Placement:
+        
+        Place ECS (or application instances) and the database in the private subnet for enhanced security.
+        Place the Load Balancer in the public subnet to manage incoming traffic.
+        
+        Traffic Routing:
+        
+        Route traffic: Route 53 → CloudFront → Load Balancer → ECS Services (Private Subnet).
+        Use CloudFront to cache and distribute frontend files (stored in S3) for improved performance and security.
+        
+        DNS:
+        
+        Assign a custom domain via Route 53 to CloudFront for both frontend and backend traffic.
+    
+        Monitoring and Metrics:
+        
+        Configure CloudWatch for application, ECS, and database performance monitoring.
+        Integrate SNS or other alerting tools for proactive notifications.
+        Key Advantages of this Approach
+        
+        Security:
+        
+        Direct internet access is restricted for private resources.
+        Bastion Host ensures controlled SSH access to private instances.
+        
+        Scalability:
+        
+        ECS in private subnet allows for auto-scaling while maintaining secure DB access.
+        CloudFront improves performance by caching frontend assets.
+        
+        Testing Flexibility:
+        
+        Public Bastion Host provides controlled access for testing purposes.
+        Testing setup closely mirrors the production environment for consistency.
+        
+        Centralized Monitoring:
+        
+        CloudWatch ensures effective monitoring and alerting for all environments.
+        This approach follows AWS best practices and maintains a secure, scalable, and efficient architecture for both testing and production environments. 😊
+    
+    
+    
+    
+    
+    
+    
+            
+       
