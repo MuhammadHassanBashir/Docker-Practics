@@ -129,6 +129,11 @@ STEPS
     
       Use application logs or directly test the RDS connection using a tool like mysql or pymysql to verify connectivity.
 
+ **command to see docker compose status**
+
+    docker-compose ps
+
+
 ## How to make it confirm that instance successfully connected with RDS
 
     Agar aapne apne application ko AWS RDS ke credentials diye hain aur aapko confirm karna hai ke connection successful hai ya nahi, to aap kuch simple steps follow kar sakte hain:
